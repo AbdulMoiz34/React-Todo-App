@@ -20,7 +20,6 @@ export default function App() {
       return;
     }
     setTodos([...todos, { todo: val, desc: desc }]);
-    debugger;
     setVal("");
     setDesc("");
   }
