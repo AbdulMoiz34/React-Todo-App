@@ -1,10 +1,11 @@
 import React, { useState } from "react";
-import { Input } from "./components";
+import { Input, Todo as TodoEl } from "./components";
 import Button from "@mui/material/Button";
 
 type Todo = {
   todo: string,
-  desc: string
+  desc: string,
+  completed: boolean
 };
 
 export default function App() {
@@ -19,16 +20,20 @@ export default function App() {
       alert("Please Enter");
       return;
     }
-    setTodos([...todos, { todo: val, desc: desc }]);
+    setTodos([...todos, { todo: val, desc: desc, completed: false }]);
     setVal("");
     setDesc("");
   }
 
   const deleteTodo = (idx: number) => {
-    const copyTodos = [...todos];
-    setTodos(copyTodos.filter((_, i) => idx !== i));
+    setTodos(todos.filter((_, i) => idx !== i));
   }
-
+console.log(todos);
+  const toggleTodoCompleted = (idx: number) => {
+    const newTodos = [...todos];
+    newTodos[idx].completed = !newTodos[idx].completed;
+    setTodos(newTodos);
+  }
 
   const changeValHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     setVal(e.target.value);
@@ -66,25 +71,13 @@ export default function App() {
           </Button>
         </form>
       </div>
-
       <div className="my-10 px-6 max-w-3xl mx-auto">
         {todos.length === 0 ? (
           <p className="text-center text-gray-500">No todos yet. Add one!</p>
         ) : (
           <ul className="space-y-4">
             {todos.map((todo, index) => (
-              <li
-                key={index}
-                className="flex justify-between bg-white p-5 shadow-md rounded-lg border border-gray-200 hover:shadow-lg transition-all"
-              >
-                <div>
-                  <h3 className="text-lg font-semibold text-gray-800">{todo.todo}</h3>
-                  <p className="text-sm text-gray-600">{todo.desc}</p>
-                </div>
-                <div>
-                  <button className="text-xs cursor-pointer hover:font-bold" onClick={() => deleteTodo(index)}>DEL</button>
-                </div>
-              </li>
+              <TodoEl onDelete={deleteTodo} isCompleted={todo.completed} index={index} todo={todo.todo} desc={todo.desc} key={index} toggleTodoCompleted={toggleTodoCompleted} />
             ))}
           </ul>
         )}
