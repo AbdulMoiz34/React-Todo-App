@@ -1,15 +1,24 @@
-import TextField from "@mui/material/TextField";
+import type React from "react";
+import { Input as AntInput } from "antd";
 
-type InputProps = {
+type Props = {
     placeholder: string,
-    required: boolean,
+    required?: boolean,
     value: string,
-    changeHandler: (e: React.ChangeEvent<HTMLInputElement>) => void;
+    onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 };
 
-const Input = ({ placeholder, required, changeHandler, value }: InputProps) => {
-    return <TextField label={placeholder} value={value} onChange={changeHandler} variant="outlined" required={required} />;
-
+export default function Input({ placeholder, required, value, onChange }: Props) {
+    return (
+        <>
+            <AntInput
+                style={{ padding: "6px" }}
+                className="flex-3/4 w-full rounded-lg inline-block text-base shadow-sm focus:ring-2 focus:ring-blue-500"
+                placeholder={placeholder}
+                required={required}
+                value={value}
+                onChange={onChange}
+            />
+        </>
+    );
 }
-
-export default Input;

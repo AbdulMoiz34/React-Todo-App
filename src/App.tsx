@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Input, Todo as TodoEl } from "./components";
-import Button from "@mui/material/Button";
 import { addDoc, collection, db, onSnapshot, deleteDoc, doc, updateDoc } from "./config/firebase.ts";
-import { message } from "antd";
+import { message, Button } from "antd";
 
 type Todo = {
   todo: string,
@@ -85,7 +84,7 @@ export default function App() {
         📝 My Todo App
       </h1>
 
-      <div className="mt-10 px-6 flex justify-center ">
+      <div className="mt-10 px-6 flex justify-center">
         <form
           onSubmit={addTodo}
           className="flex flex-col justify-center md:flex-row gap-4 w-full max-w-3xl bg-white p-6 rounded-xl"
@@ -94,16 +93,20 @@ export default function App() {
             placeholder="Enter Todo"
             required={true}
             value={val}
-            changeHandler={changeValHandler}
+            onChange={changeValHandler}
           />
           <Input
             placeholder="Enter Description"
             value={desc}
-            required={false}
-            changeHandler={changeDescHandler}
+            onChange={changeDescHandler}
           />
-          <Button type="submit" variant="contained" className="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2 rounded-md transition-all">
-            ➕ Add Todo
+          <Button
+            htmlType="submit"
+            type="primary"
+            style={{ padding: "14px 0" }}
+            className="flex-1/4 inline-block w-full text-white rounded-lg"
+          >
+            Add Todo
           </Button>
         </form>
       </div>
@@ -111,9 +114,14 @@ export default function App() {
         {todos.length === 0 ? (
           <p className="text-center text-gray-500">No todos yet. Add one!</p>
         ) : (
-          <ul className="space-y-4">
+          <ul className="space-y-3 mt-6">
             {todos.map((todo) => (
-              <TodoEl onDelete={deleteTodo} todo={todo} key={todo.id} toggleCompleted={toggleCompleted} />
+              <TodoEl
+                key={todo.id}
+                todo={todo}
+                onDelete={deleteTodo}
+                toggleCompleted={toggleCompleted}
+              />
             ))}
           </ul>
         )}
