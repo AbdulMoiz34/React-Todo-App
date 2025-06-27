@@ -1,38 +1,73 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Input, Todo as TodoEl } from "./components";
 import Button from "@mui/material/Button";
+import { addDoc, collection, db, onSnapshot, deleteDoc, doc, updateDoc } from "./config/firebase.ts";
+import { message } from "antd";
 
 type Todo = {
   todo: string,
   desc: string,
-  completed: boolean
+  completed: boolean,
+  id: string
 };
 
 export default function App() {
   const [todos, setTodos] = useState<Todo[]>([]);
+  const [messageApi, contextHolder] = message.useMessage();
 
   const [val, setVal] = useState("");
   const [desc, setDesc] = useState("");
 
-  const addTodo = (event: React.FormEvent<HTMLFormElement>) => {
+
+  useEffect(() => {
+    const hide = messageApi.loading({ content: "Loading", duration: 0 });
+    onSnapshot(collection(db, "todos"), (querySnapshot) => {
+      const todos: Todo[] = [];
+      querySnapshot.forEach(doc => {
+        todos.push({ ...doc.data(), id: doc.id } as Todo);
+      });
+      setTodos(todos);
+      hide();
+    });
+  }, []);
+
+  const addTodo = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (!val.trim()) {
       alert("Please Enter");
       return;
     }
-    setTodos([...todos, { todo: val, desc: desc, completed: false }]);
+
+    try {
+      await addDoc(collection(db, "todos"), {
+        todo: val,
+        desc,
+        completed: false,
+      });
+      messageApi.success("Todo added.");
+    } catch (err) {
+      messageApi.error("Something went wrong.");
+    }
     setVal("");
     setDesc("");
   }
 
-  const deleteTodo = (idx: number) => {
-    setTodos(todos.filter((_, i) => idx !== i));
+  const deleteTodo = async (id: string) => {
+    try {
+      await deleteDoc(doc(db, "todos", id));
+      messageApi.success("todo deleted.");
+    } catch (err) {
+      messageApi.error("something went wrong.");
+    }
   }
-console.log(todos);
-  const toggleTodoCompleted = (idx: number) => {
-    const newTodos = [...todos];
-    newTodos[idx].completed = !newTodos[idx].completed;
-    setTodos(newTodos);
+
+  const toggleCompleted = async (id: string, completedStatus: boolean) => {
+    try {
+      await updateDoc(doc(db, "todos", id), { completed: !completedStatus });
+      messageApi.success("Todo updated.");
+    } catch (err) {
+      messageApi.error("Error.");
+    }
   }
 
   const changeValHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -45,6 +80,7 @@ console.log(todos);
 
   return (
     <>
+      {contextHolder}
       <h1 className="bg-gradient-to-r from-indigo-500 to-purple-600 text-white text-center py-6 text-3xl font-extrabold shadow-md rounded-b-lg">
         📝 My Todo App
       </h1>
@@ -76,8 +112,8 @@ console.log(todos);
           <p className="text-center text-gray-500">No todos yet. Add one!</p>
         ) : (
           <ul className="space-y-4">
-            {todos.map((todo, index) => (
-              <TodoEl onDelete={deleteTodo} isCompleted={todo.completed} index={index} todo={todo.todo} desc={todo.desc} key={index} toggleTodoCompleted={toggleTodoCompleted} />
+            {todos.map((todo) => (
+              <TodoEl onDelete={deleteTodo} todo={todo} key={todo.id} toggleCompleted={toggleCompleted} />
             ))}
           </ul>
         )}

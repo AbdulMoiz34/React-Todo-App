@@ -8,7 +8,7 @@ type InputProps = {
 };
 
 const Input = ({ placeholder, required, changeHandler, value }: InputProps) => {
-    return <TextField id="standard-basic" label={placeholder} value={value} onChange={changeHandler} variant="outlined" required={required} />;
+    return <TextField label={placeholder} value={value} onChange={changeHandler} variant="outlined" required={required} />;
 
 }
 
