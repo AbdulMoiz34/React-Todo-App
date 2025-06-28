@@ -96,7 +96,6 @@ export default function App() {
 
   const editTodo = async (event: React.ChangeEvent<HTMLFormElement>) => {
     event.preventDefault();
-    console.log(editableTodoId);
     if (!editableTodoId.current) {
       return;
     }
