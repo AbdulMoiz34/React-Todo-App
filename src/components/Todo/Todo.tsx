@@ -1,5 +1,5 @@
 import { Checkbox, Tooltip } from "antd";
-import { DeleteOutlined } from "@ant-design/icons";
+import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 
 type TodoType = {
     todo: string,
@@ -11,15 +11,16 @@ type TodoType = {
 type Todo = {
     todo: TodoType,
     onDelete: (id: string) => void,
+    onEdit: (id: string, val: string, desc: string) => void,
     toggleCompleted: (id: string, completed: boolean) => void;
 }
 
-const Todo = ({ todo, onDelete, toggleCompleted }: Todo) => {
+const Todo = ({ todo, onDelete, toggleCompleted, onEdit }: Todo) => {
     return (
         <li
-            className="flex justify-between items-start gap-3 p-4 border border-gray-200 rounded-lg shadow-sm hover:shadow-md transition-all bg-white"
+            className="flex justify-between items-center gap-3 p-4 border border-gray-200 rounded-lg shadow-sm hover:shadow-md transition-all bg-white"
         >
-            <div className="flex items-start gap-3">
+            <div className="flex items-center gap-3">
                 <Checkbox
                     checked={todo.completed}
                     onChange={() => toggleCompleted(todo.id, todo.completed)}
@@ -40,12 +41,20 @@ const Todo = ({ todo, onDelete, toggleCompleted }: Todo) => {
                 </div>
             </div>
 
-            <Tooltip title="Delete">
-                <DeleteOutlined
-                    className="text-red-500 text-lg hover:text-red-700 cursor-pointer mt-1"
-                    onClick={() => onDelete(todo.id)}
-                />
-            </Tooltip>
+            <div className="">
+                <Tooltip title="Delete">
+                    <DeleteOutlined
+                        className="cursor-pointer mt-1"
+                        onClick={() => onDelete(todo.id)}
+                    />
+                </Tooltip>
+                <Tooltip title="Edit" className="ml-3">
+                    <EditOutlined
+                        className="cursor-pointer mt-1"
+                        onClick={() => onEdit(todo.id, todo.todo, todo.desc)}
+                    />
+                </Tooltip>
+            </div>
         </li>
     );
 }
