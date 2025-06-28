@@ -108,7 +108,7 @@ export default function App() {
     }
   }
 
-  const padding = { padding: "14px 6px" };
+  const padding = { padding: "14px" };
   return (
     <>
       {contextHolder}
