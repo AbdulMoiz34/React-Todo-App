@@ -108,6 +108,7 @@ export default function App() {
     }
   }
 
+  const padding = { padding: "14px 0" };
   return (
     <>
       {contextHolder}
@@ -134,12 +135,12 @@ export default function App() {
           <Button
             htmlType="submit"
             type="primary"
-            style={{ padding: "14px 0" }}
+            style={padding}
             className="flex-1/4 inline-block w-full text-white rounded-lg"
           >
             {isEdit ? "Save" : "Add Todo"}
           </Button>
-          {isEdit && <Button htmlType="button" type="default" onClick={handleCancel}>Cancel</ Button>}
+          {isEdit && <Button htmlType="button" type="default" onClick={handleCancel} style={padding}>Cancel</ Button>}
         </form>
       </div>
       <div className="my-10 px-6 max-w-3xl mx-auto">
